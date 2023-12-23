@@ -46,6 +46,7 @@ var tp *trace.TracerProvider
 
 func tracerProvider() error {
 	// url := "http://127.0.0.1:14268/api/traces"
+	// url := "http://192.168.2.152:32561/api/traces"
 	url := "http://192.168.2.152:32561/api/traces"
 	jexp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
 	if err != nil {
