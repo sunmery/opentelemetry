@@ -11,7 +11,8 @@ import (
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.18.0"
+	// semconv "go.opentelemetry.io/otel/semconv/v1.18.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.24.0"
 	"otel-gin/log"
 	"sync"
 	"time"
@@ -25,7 +26,7 @@ var tp *trace.TracerProvider
 
 func tracerProvider() error {
 	// url := "http://127.0.0.1:14268/api/traces"
-	url := "http://192.168.2.152:32561/api/traces"
+	url := "http://192.168.2.100:30188/api/traces"
 	jexp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
 	if err != nil {
 		panic(err)

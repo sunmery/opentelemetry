@@ -1,14 +1,16 @@
 package main
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/exporters/jaeger"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.18.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.24.0"
 	"time"
 )
 
@@ -20,21 +22,24 @@ var tp *trace.TracerProvider
 
 func tracerProvider() error {
 	// url := "http://127.0.0.1:14268/api/traces"
-	url := "http://192.168.2.152:32561/api/traces"
-	jexp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
+	// url := "http://192.168.2.100:30188/api/traces"
+	url := "192.168.2.152:30507"
+	// jexp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
+	ctx := context.Background()
+	otlpExp, err := otlptracegrpc.New(ctx, otlptracegrpc.WithInsecure(), otlptracegrpc.WithEndpoint(url))
 	if err != nil {
 		panic(err)
 	}
 	// 上报器 批量处理链路追踪器
 	tp = trace.NewTracerProvider(
-		trace.WithBatcher(jexp),
+		trace.WithBatcher(otlpExp),
 		// 如果未使用此选项，跟踪程序提供程序将使用该资源 默认资源。
 		trace.WithResource(
 			resource.NewWithAttributes(
 				// 固定写法
 				semconv.SchemaURL,
 				// 设置service
-				semconv.ServiceNameKey.String("mxshop-user-gin-server"),
+				semconv.ServiceNameKey.String("mxshop-user-gin-server-1"),
 				// 设置Process键值对 可以让其他人员分析 全局的，设置到trace上的
 				attribute.String("environment", "dev"),
 				attribute.Int("ID", 1),
