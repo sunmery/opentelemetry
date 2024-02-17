@@ -21,10 +21,9 @@ const (
 var tp *trace.TracerProvider
 
 func tracerProvider() error {
-	// url := "http://127.0.0.1:14268/api/traces"
-	// url := "http://192.168.2.100:30188/api/traces"
+	// 不需要添加HTTP协议, 只需要Host+Port, 该地址为otel-collector-collector的service地址,
+	// 如果是gRPC, 端口则为4317与它所对应的端口, http为4318与它所对应的端口
 	url := "192.168.2.152:30507"
-	// jexp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
 	ctx := context.Background()
 	otlpExp, err := otlptracegrpc.New(ctx, otlptracegrpc.WithInsecure(), otlptracegrpc.WithEndpoint(url))
 	if err != nil {
